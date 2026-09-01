@@ -1,35 +1,35 @@
 {
-  "name": "course-calendar",
-  "private": true,
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
-  "type": "module",
-  "scripts": {
-    "dev": "turbo run dev",
-    "build": "turbo run build",
-    "check-types": "turbo run check-types",
-    "dev:web": "turbo run dev -F web --",
-    "dev:server": "turbo run dev -F server --",
-    "db:push": "turbo run db:push -F @course-calendar/db --",
-    "db:studio": "turbo run db:studio -F @course-calendar/db --",
-    "db:generate": "turbo run db:generate -F @course-calendar/db --",
-    "db:migrate": "turbo run db:migrate -F @course-calendar/db --",
-    "check": "biome check --write ."
-  },
-  "dependencies": {
-    "@course-calendar/env": "workspace:*",
-    "dotenv": "catalog:",
-    "zod": "catalog:"
-  },
-  "devDependencies": {
-    "@biomejs/biome": "^2.5.11",
-    "@course-calendar/config": "workspace:*",
-    "@types/node": "catalog:",
-    "lefthook": "^2.1.12",
-    "turbo": "^2.10.12",
-    "typescript": "catalog:"
-  },
-  "packageManager": "pnpm@11.22.0"
+	"name": "course-calendar",
+	"private": true,
+	"workspaces": [
+		"apps/*",
+		"packages/*"
+	],
+	"type": "module",
+	"scripts": {
+		"dev": "turbo run dev",
+		"build": "turbo run build",
+		"check-types": "turbo run check-types",
+		"dev:web": "turbo run dev -F web --",
+		"dev:server": "turbo run dev -F server --",
+		"db:push": "turbo run db:push -F @course-calendar/db --",
+		"db:studio": "turbo run db:studio -F @course-calendar/db --",
+		"db:generate": "turbo run db:generate -F @course-calendar/db --",
+		"db:migrate": "turbo run db:migrate -F @course-calendar/db --",
+		"check": "biome check --write ."
+	},
+	"dependencies": {
+		"@course-calendar/env": "workspace:*",
+		"dotenv": "catalog:",
+		"zod": "catalog:"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.5.11",
+		"@course-calendar/config": "workspace:*",
+		"@types/node": "catalog:",
+		"lefthook": "^2.1.12",
+		"turbo": "^2.10.12",
+		"typescript": "catalog:"
+	},
+	"packageManager": "pnpm@11.22.0"
 }
