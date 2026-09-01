@@ -33,10 +33,13 @@ app.get("/", (c) => {
 
 import { serve } from "@hono/node-server";
 
+const port = Number(process.env.PORT ?? 3070);
+
 serve(
 	{
 		fetch: app.fetch,
-		port: 3070,
+		hostname: "0.0.0.0",
+		port,
 	},
 	(info) => {
 		console.log(`Server is running on http://localhost:${info.port}`);
