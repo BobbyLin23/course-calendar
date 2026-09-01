@@ -7,9 +7,9 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-	--background: oklch(1 0 0);
+	--background: oklch(0.985 0.008 82);
 	--foreground: oklch(0.145 0 0);
-	--card: oklch(1 0 0);
+	--card: oklch(0.997 0.004 82);
 	--card-foreground: oklch(0.145 0 0);
 	--popover: oklch(1 0 0);
 	--popover-foreground: oklch(0.145 0 0);
@@ -17,13 +17,13 @@
 	--primary-foreground: oklch(0.985 0 0);
 	--secondary: oklch(0.97 0 0);
 	--secondary-foreground: oklch(0.205 0 0);
-	--muted: oklch(0.97 0 0);
+	--muted: oklch(0.955 0.012 82);
 	--muted-foreground: oklch(0.556 0 0);
-	--accent: oklch(0.97 0 0);
+	--accent: oklch(0.94 0.02 82);
 	--accent-foreground: oklch(0.205 0 0);
 	--destructive: oklch(0.58 0.22 27);
-	--border: oklch(0.922 0 0);
-	--input: oklch(0.922 0 0);
+	--border: oklch(0.9 0.018 82);
+	--input: oklch(0.88 0.02 82);
 	--ring: oklch(0.708 0 0);
 	--chart-1: oklch(0.809 0.105 251.813);
 	--chart-2: oklch(0.623 0.214 259.815);
@@ -122,9 +122,548 @@
 		@apply border-border outline-ring/50;
 	}
 	body {
-		@apply font-sans bg-background text-foreground;
+		@apply bg-background font-sans text-foreground;
+		font-feature-settings:
+			"ss01" 1,
+			"cv11" 1;
 	}
 	html {
 		@apply font-sans;
+	}
+}
+
+@layer components {
+	.eyebrow {
+		@apply text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground;
+	}
+
+	.brand-mark {
+		@apply flex size-9 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm;
+	}
+
+	.brand-mark svg {
+		@apply size-4;
+	}
+
+	.status-pulse {
+		@apply size-1.5 rounded-full bg-emerald-500;
+		box-shadow: 0 0 0 3px
+			color-mix(in oklch, oklch(0.7 0.18 150) 18%, transparent);
+	}
+
+	.summary-card {
+		@apply border-0 shadow-sm;
+	}
+
+	.summary-mark {
+		@apply size-2 rounded-full;
+	}
+
+	.summary-indigo .summary-mark {
+		@apply bg-indigo-400;
+	}
+	.summary-coral .summary-mark {
+		@apply bg-rose-400;
+	}
+	.summary-amber .summary-mark {
+		@apply bg-amber-400;
+	}
+	.summary-sage .summary-mark {
+		@apply bg-emerald-400;
+	}
+
+	.calendar-shell {
+		@apply overflow-hidden rounded-2xl border bg-card shadow-sm;
+	}
+
+	.calendar-scroll {
+		@apply max-h-[min(70dvh,760px)] overflow-auto;
+		overscroll-behavior: contain;
+		scroll-snap-type: x mandatory;
+	}
+
+	.calendar-min-width {
+		min-width: 0;
+	}
+
+	.calendar-carousel {
+		display: grid;
+		grid-auto-columns: 100%;
+		grid-auto-flow: column;
+	}
+
+	.calendar-page {
+		min-width: 0;
+		scroll-snap-align: start;
+	}
+
+	.calendar-grid {
+		display: grid;
+		grid-template-columns: 4.25rem repeat(2, minmax(0, 1fr));
+	}
+
+	.calendar-days-row {
+		@apply sticky top-0 z-20 border-b bg-card;
+	}
+
+	.time-gutter {
+		@apply border-r;
+	}
+
+	.day-heading {
+		@apply flex h-[4.5rem] flex-col items-center justify-center gap-1 border-r text-xs text-muted-foreground;
+	}
+
+	.day-heading strong {
+		@apply flex size-7 items-center justify-center rounded-full text-base font-semibold text-foreground;
+	}
+
+	.day-heading.is-today {
+		@apply text-primary;
+	}
+
+	.day-heading.is-today strong {
+		@apply bg-primary text-primary-foreground;
+	}
+
+	.calendar-body {
+		background: color-mix(in oklch, var(--background) 62%, var(--card));
+	}
+
+	.time-axis {
+		@apply relative border-r bg-card;
+	}
+
+	.time-axis span {
+		@apply absolute right-2 text-[10px] tabular-nums text-muted-foreground;
+	}
+
+	.day-column {
+		@apply relative border-r;
+	}
+
+	.today-column {
+		background: color-mix(in oklch, var(--primary) 2%, transparent);
+	}
+
+	.hour-row {
+		@apply pointer-events-none absolute inset-x-0 h-14 border-t;
+	}
+
+	.hour-row span {
+		@apply absolute inset-x-0 top-1/2 border-t border-dashed border-border/70;
+	}
+
+	.hour-row span + span {
+		@apply top-full border-border/35;
+	}
+
+	.session-card {
+		@apply absolute inset-x-1.5 z-10 flex flex-col items-start overflow-hidden rounded-xl border border-transparent border-l-4 px-2.5 py-2 text-left text-[11px] shadow-sm transition-all hover:-translate-y-px hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring;
+	}
+
+	.session-card strong {
+		@apply mt-0.5 truncate text-xs font-semibold;
+	}
+
+	.session-time {
+		@apply font-semibold tabular-nums opacity-70;
+	}
+
+	.session-location {
+		@apply mt-1 truncate opacity-70;
+	}
+
+	.course-indigo {
+		@apply border-l-indigo-500 bg-indigo-100 text-indigo-950 dark:bg-indigo-950/70 dark:text-indigo-100;
+	}
+	.course-coral {
+		@apply border-l-rose-500 bg-rose-100 text-rose-950 dark:bg-rose-950/70 dark:text-rose-100;
+	}
+	.course-sage {
+		@apply border-l-emerald-500 bg-emerald-100 text-emerald-950 dark:bg-emerald-950/70 dark:text-emerald-100;
+	}
+	.course-amber {
+		@apply border-l-amber-500 bg-amber-100 text-amber-950 dark:bg-amber-950/70 dark:text-amber-100;
+	}
+	.course-plum {
+		@apply border-l-violet-500 bg-violet-100 text-violet-950 dark:bg-violet-950/70 dark:text-violet-100;
+	}
+
+	.session-leave {
+		@apply border-dashed opacity-70 grayscale-[0.2];
+	}
+
+	.current-time-line {
+		@apply absolute inset-x-0 z-20 h-px bg-rose-500;
+	}
+
+	.current-time-line i {
+		@apply absolute -left-0.5 -top-1 size-2 rounded-full bg-rose-500;
+	}
+
+	.calendar-workspace {
+		@apply grid min-h-0 bg-background;
+		height: calc(100svh - 4rem);
+		grid-template-columns: 16.5rem minmax(0, 1fr);
+	}
+
+	.calendar-sidebar {
+		@apply hidden min-h-0 flex-col border-r bg-card md:flex;
+	}
+
+	.mini-calendar {
+		@apply border-b px-4 py-5;
+	}
+
+	.mini-calendar h2 {
+		@apply mb-4 px-1 font-semibold text-sm tracking-tight;
+	}
+
+	.mini-calendar-weekdays,
+	.mini-calendar-grid {
+		display: grid;
+		grid-template-columns: repeat(7, minmax(0, 1fr));
+	}
+
+	.mini-calendar-weekdays span {
+		@apply flex h-6 items-center justify-center text-[10px] font-medium text-muted-foreground;
+	}
+
+	.mini-calendar-day {
+		@apply relative flex aspect-square items-center justify-center rounded-md text-[11px] tabular-nums text-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring;
+	}
+
+	.mini-calendar-day.is-outside {
+		@apply text-muted-foreground/45;
+	}
+
+	.mini-calendar-day.is-selected-week {
+		@apply bg-muted;
+	}
+
+	.mini-calendar-day.is-today {
+		@apply bg-primary font-semibold text-primary-foreground hover:bg-primary;
+	}
+
+	.calendar-list-section {
+		@apply flex min-h-0 flex-1 flex-col px-3 py-5;
+	}
+
+	.calendar-list-heading {
+		@apply mb-2 flex items-center justify-between px-2;
+	}
+
+	.calendar-list-heading h2 {
+		@apply font-semibold text-xs;
+	}
+
+	.calendar-list-heading span {
+		@apply rounded-full bg-muted px-2 py-0.5 text-[10px] tabular-nums text-muted-foreground;
+	}
+
+	.calendar-course-list {
+		@apply flex min-h-0 flex-col gap-0.5 overflow-y-auto;
+	}
+
+	.calendar-course-filter {
+		@apply flex min-h-11 cursor-pointer items-center gap-2 rounded-lg px-2 py-2 transition-colors hover:bg-muted/70;
+	}
+
+	.calendar-course-filter > button {
+		@apply shrink-0;
+	}
+
+	.calendar-course-copy {
+		@apply flex min-w-0 flex-1 flex-col;
+	}
+
+	.calendar-course-copy strong {
+		@apply truncate font-medium text-xs;
+	}
+
+	.calendar-course-copy small {
+		@apply truncate text-[10px] text-muted-foreground;
+	}
+
+	.calendar-course-balance {
+		@apply text-[10px] tabular-nums text-muted-foreground;
+	}
+
+	.calendar-sidebar-empty {
+		@apply px-2 py-4 text-xs text-muted-foreground;
+	}
+
+	.calendar-sidebar-hint {
+		@apply flex items-center gap-1.5 border-t px-5 py-3 text-[10px] text-muted-foreground;
+	}
+
+	.calendar-sidebar-hint span {
+		@apply mr-auto;
+	}
+
+	.calendar-sidebar-hint kbd {
+		@apply flex min-w-5 items-center justify-center rounded border bg-muted px-1 py-0.5 font-sans text-[9px] text-muted-foreground shadow-xs;
+	}
+
+	.calendar-main-panel {
+		@apply flex min-h-0 min-w-0 flex-col bg-card;
+	}
+
+	.calendar-toolbar {
+		@apply flex h-[4.75rem] shrink-0 items-center justify-between gap-3 border-b px-3 sm:px-5;
+	}
+
+	.calendar-toolbar-title {
+		@apply min-w-0;
+	}
+
+	.calendar-toolbar-title h1 {
+		@apply truncate font-semibold text-base tracking-tight sm:text-lg;
+	}
+
+	.calendar-toolbar-title span {
+		@apply block text-[10px] tabular-nums text-muted-foreground sm:text-xs;
+	}
+
+	.calendar-toolbar-actions {
+		@apply flex shrink-0 items-center gap-1.5;
+	}
+
+	.calendar-stepper {
+		@apply flex items-center rounded-lg border bg-background p-0.5;
+	}
+
+	.calendar-loading {
+		@apply min-h-0 flex-1 overflow-hidden;
+	}
+
+	.notion-calendar-scroll {
+		@apply relative min-h-0 flex-1 overflow-auto bg-card;
+		overscroll-behavior: contain;
+		scroll-snap-type: x proximity;
+	}
+
+	.notion-calendar-grid {
+		--time-gutter: 3.75rem;
+		display: grid;
+		grid-template-columns: var(--time-gutter) repeat(7, minmax(8.5rem, 1fr));
+		grid-template-rows: 4.5rem auto;
+		min-width: calc(var(--time-gutter) + 59.5rem);
+	}
+
+	.calendar-corner-cell {
+		@apply sticky top-0 left-0 z-40 flex items-end justify-center border-r border-b bg-card pb-2;
+	}
+
+	.calendar-corner-cell span {
+		@apply text-[9px] tabular-nums text-muted-foreground;
+	}
+
+	.calendar-day-heading {
+		@apply sticky top-0 z-30 flex items-center justify-center gap-2 border-r border-b bg-card px-2 text-muted-foreground;
+		scroll-snap-align: start;
+		scroll-margin-left: var(--time-gutter);
+	}
+
+	.calendar-day-heading span {
+		@apply text-[10px] font-medium;
+	}
+
+	.calendar-day-heading strong {
+		@apply flex size-7 items-center justify-center rounded-full font-semibold text-sm tabular-nums text-foreground;
+	}
+
+	.calendar-day-heading small {
+		@apply flex size-4 items-center justify-center rounded-full bg-muted text-[9px] tabular-nums;
+	}
+
+	.calendar-day-heading.is-today span {
+		@apply text-primary;
+	}
+
+	.calendar-day-heading.is-today strong {
+		@apply bg-primary text-primary-foreground;
+	}
+
+	.calendar-time-axis {
+		@apply sticky left-0 z-20 border-r bg-card;
+	}
+
+	.calendar-time-axis span {
+		@apply absolute right-2 text-[9px] tabular-nums text-muted-foreground;
+	}
+
+	.calendar-day-column {
+		@apply relative border-r bg-card;
+		background-image: linear-gradient(
+			to right,
+			color-mix(in oklch, var(--border) 25%, transparent),
+			transparent 1px
+		);
+	}
+
+	.calendar-day-column.is-today {
+		background-color: color-mix(in oklch, var(--primary) 2.5%, var(--card));
+	}
+
+	.calendar-hour-row {
+		@apply pointer-events-none absolute inset-x-0 border-t;
+		height: 4.5rem;
+	}
+
+	.calendar-hour-row::after {
+		content: "";
+		@apply absolute inset-x-0 top-1/2 border-t border-dashed border-border/35;
+	}
+
+	.calendar-now-line {
+		@apply pointer-events-none absolute inset-x-0 z-20 h-px bg-rose-500;
+	}
+
+	.calendar-now-line i {
+		@apply absolute -top-1 -left-1 size-2 rounded-full bg-rose-500;
+	}
+
+	.notion-session-card {
+		@apply absolute z-10 flex min-w-0 flex-col items-start overflow-hidden rounded-md border border-transparent border-l-[3px] px-1.5 py-1 text-left shadow-xs transition-[transform,box-shadow,filter] hover:z-30 hover:-translate-y-px hover:brightness-[0.98] hover:shadow-md focus-visible:z-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring;
+	}
+
+	.session-title-row {
+		@apply flex w-full min-w-0 items-center gap-1;
+	}
+
+	.session-title-row svg,
+	.session-place svg {
+		@apply size-2.5 shrink-0;
+	}
+
+	.session-title-row strong {
+		@apply truncate font-semibold text-[11px] leading-4;
+	}
+
+	.session-meta,
+	.session-place {
+		@apply mt-0.5 w-full truncate text-[9px] leading-3 opacity-70;
+	}
+
+	.session-place {
+		@apply flex items-center gap-0.5;
+	}
+
+	.notion-session-card.is-compact {
+		@apply justify-center py-0.5;
+	}
+
+	.notion-session-card.is-compact .session-meta,
+	.notion-session-card.is-compact .session-place,
+	.notion-session-card.is-compact svg {
+		@apply hidden;
+	}
+
+	.notion-session-card.session-muted {
+		@apply border-dashed opacity-60 grayscale-[0.25];
+	}
+
+	.calendar-empty-state {
+		@apply pointer-events-none sticky z-10 -mt-[44rem] h-64 w-72 border bg-card/95 shadow-lg backdrop-blur;
+		left: calc(50% - 9rem);
+	}
+
+	.course-dot {
+		@apply size-2 rounded-full;
+	}
+
+	.course-dot-coral {
+		@apply bg-rose-500;
+	}
+	.course-dot-indigo {
+		@apply bg-indigo-500;
+	}
+	.course-dot-sage {
+		@apply bg-emerald-500;
+	}
+	.course-dot-amber {
+		@apply bg-amber-500;
+	}
+	.course-dot-plum {
+		@apply bg-violet-500;
+	}
+
+	.course-avatar {
+		@apply flex size-10 shrink-0 items-center justify-center rounded-2xl text-sm font-semibold;
+	}
+
+	.course-avatar-coral {
+		@apply bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-200;
+	}
+	.course-avatar-indigo {
+		@apply bg-indigo-100 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-200;
+	}
+	.course-avatar-sage {
+		@apply bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-200;
+	}
+	.course-avatar-amber {
+		@apply bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-200;
+	}
+	.course-avatar-plum {
+		@apply bg-violet-100 text-violet-700 dark:bg-violet-950/60 dark:text-violet-200;
+	}
+
+	.ledger-icon {
+		@apply flex size-8 shrink-0 items-center justify-center rounded-full;
+	}
+
+	.ledger-icon svg {
+		@apply size-3.5;
+	}
+	.ledger-plus {
+		@apply bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300;
+	}
+	.ledger-minus {
+		@apply bg-muted text-muted-foreground;
+	}
+
+	.section-kicker {
+		@apply text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground;
+	}
+}
+
+@media (min-width: 768px) {
+	.calendar-min-width {
+		min-width: 0;
+	}
+}
+
+@media (max-width: 767px) {
+	.calendar-workspace {
+		height: calc(100svh - 4rem - 4.25rem);
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.calendar-toolbar {
+		height: 4.25rem;
+	}
+
+	.notion-calendar-grid {
+		--time-gutter: 3.5rem;
+		grid-template-columns: var(--time-gutter) repeat(7, minmax(8.25rem, 1fr));
+		grid-template-rows: 4rem auto;
+		min-width: calc(var(--time-gutter) + 57.75rem);
+	}
+
+	.calendar-day-heading {
+		@apply gap-1;
+	}
+
+	.calendar-day-heading small {
+		@apply hidden;
+	}
+}
+
+@media (min-width: 1120px) {
+	.notion-calendar-grid {
+		grid-template-columns: var(--time-gutter) repeat(7, minmax(0, 1fr));
+		min-width: 100%;
 	}
 }

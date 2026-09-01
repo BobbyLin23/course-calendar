@@ -1,3 +1,4 @@
+import { db } from "@course-calendar/db";
 import type { Context as HonoContext } from "hono";
 
 export type CreateContextOptions = {
@@ -8,6 +9,7 @@ export async function createContext(_options: CreateContextOptions) {
 	return {
 		auth: null,
 		session: null,
+		db,
 	};
 }
 

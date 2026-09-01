@@ -1,0 +1,721 @@
+{
+	"id": "8d485e88-f60d-4ec7-a438-f885ed595f1e",
+	"prevId": "00000000-0000-0000-0000-000000000000",
+	"version": "7",
+	"dialect": "postgresql",
+	"tables": {
+		"public.children": {
+			"name": "children",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "uuid",
+					"primaryKey": true,
+					"notNull": true,
+					"default": "gen_random_uuid()"
+				},
+				"name": {
+					"name": "name",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"avatar_url": {
+					"name": "avatar_url",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"color": {
+					"name": "color",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		},
+		"public.courses": {
+			"name": "courses",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "uuid",
+					"primaryKey": true,
+					"notNull": true,
+					"default": "gen_random_uuid()"
+				},
+				"child_id": {
+					"name": "child_id",
+					"type": "uuid",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"name": {
+					"name": "name",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"color": {
+					"name": "color",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"default_location": {
+					"name": "default_location",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"default_cost_units": {
+					"name": "default_cost_units",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true,
+					"default": 100
+				},
+				"timezone": {
+					"name": "timezone",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "'Asia/Shanghai'"
+				},
+				"notes": {
+					"name": "notes",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"start_date": {
+					"name": "start_date",
+					"type": "date",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"weekdays": {
+					"name": "weekdays",
+					"type": "smallint[]",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "'{}'"
+				},
+				"local_start_time": {
+					"name": "local_start_time",
+					"type": "time",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"duration_minutes": {
+					"name": "duration_minutes",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"schedule_type": {
+					"name": "schedule_type",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "'weekly'"
+				},
+				"single_date": {
+					"name": "single_date",
+					"type": "date",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"status": {
+					"name": "status",
+					"type": "course_status",
+					"typeSchema": "public",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "'active'"
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				}
+			},
+			"indexes": {
+				"courses_child_status_idx": {
+					"name": "courses_child_status_idx",
+					"columns": [
+						{
+							"expression": "child_id",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						},
+						{
+							"expression": "status",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						}
+					],
+					"isUnique": false,
+					"concurrently": false,
+					"method": "btree",
+					"with": {}
+				},
+				"courses_start_date_idx": {
+					"name": "courses_start_date_idx",
+					"columns": [
+						{
+							"expression": "start_date",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						}
+					],
+					"isUnique": false,
+					"concurrently": false,
+					"method": "btree",
+					"with": {}
+				}
+			},
+			"foreignKeys": {
+				"courses_child_id_children_id_fk": {
+					"name": "courses_child_id_children_id_fk",
+					"tableFrom": "courses",
+					"tableTo": "children",
+					"columnsFrom": ["child_id"],
+					"columnsTo": ["id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		},
+		"public.lesson_accounts": {
+			"name": "lesson_accounts",
+			"schema": "",
+			"columns": {
+				"course_id": {
+					"name": "course_id",
+					"type": "uuid",
+					"primaryKey": true,
+					"notNull": true
+				},
+				"low_balance_units": {
+					"name": "low_balance_units",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true,
+					"default": 300
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {
+				"lesson_accounts_course_id_courses_id_fk": {
+					"name": "lesson_accounts_course_id_courses_id_fk",
+					"tableFrom": "lesson_accounts",
+					"tableTo": "courses",
+					"columnsFrom": ["course_id"],
+					"columnsTo": ["id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		},
+		"public.lesson_ledger": {
+			"name": "lesson_ledger",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "uuid",
+					"primaryKey": true,
+					"notNull": true,
+					"default": "gen_random_uuid()"
+				},
+				"course_id": {
+					"name": "course_id",
+					"type": "uuid",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"session_id": {
+					"name": "session_id",
+					"type": "uuid",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"kind": {
+					"name": "kind",
+					"type": "ledger_kind",
+					"typeSchema": "public",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"delta_units": {
+					"name": "delta_units",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"reason": {
+					"name": "reason",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"idempotency_key": {
+					"name": "idempotency_key",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				}
+			},
+			"indexes": {
+				"lesson_ledger_course_created_idx": {
+					"name": "lesson_ledger_course_created_idx",
+					"columns": [
+						{
+							"expression": "course_id",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						},
+						{
+							"expression": "created_at",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						}
+					],
+					"isUnique": false,
+					"concurrently": false,
+					"method": "btree",
+					"with": {}
+				}
+			},
+			"foreignKeys": {
+				"lesson_ledger_course_id_courses_id_fk": {
+					"name": "lesson_ledger_course_id_courses_id_fk",
+					"tableFrom": "lesson_ledger",
+					"tableTo": "courses",
+					"columnsFrom": ["course_id"],
+					"columnsTo": ["id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				},
+				"lesson_ledger_session_id_sessions_id_fk": {
+					"name": "lesson_ledger_session_id_sessions_id_fk",
+					"tableFrom": "lesson_ledger",
+					"tableTo": "sessions",
+					"columnsFrom": ["session_id"],
+					"columnsTo": ["id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {
+				"lesson_ledger_idempotency_key_unique": {
+					"name": "lesson_ledger_idempotency_key_unique",
+					"nullsNotDistinct": false,
+					"columns": ["idempotency_key"]
+				}
+			},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		},
+		"public.schedule_rules": {
+			"name": "schedule_rules",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "uuid",
+					"primaryKey": true,
+					"notNull": true,
+					"default": "gen_random_uuid()"
+				},
+				"course_id": {
+					"name": "course_id",
+					"type": "uuid",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"start_date": {
+					"name": "start_date",
+					"type": "date",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"end_date": {
+					"name": "end_date",
+					"type": "date",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"weekdays": {
+					"name": "weekdays",
+					"type": "smallint[]",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"local_start_time": {
+					"name": "local_start_time",
+					"type": "time",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"duration_minutes": {
+					"name": "duration_minutes",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"is_active": {
+					"name": "is_active",
+					"type": "boolean",
+					"primaryKey": false,
+					"notNull": true,
+					"default": true
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				}
+			},
+			"indexes": {
+				"schedule_rules_course_idx": {
+					"name": "schedule_rules_course_idx",
+					"columns": [
+						{
+							"expression": "course_id",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						},
+						{
+							"expression": "is_active",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						}
+					],
+					"isUnique": false,
+					"concurrently": false,
+					"method": "btree",
+					"with": {}
+				}
+			},
+			"foreignKeys": {
+				"schedule_rules_course_id_courses_id_fk": {
+					"name": "schedule_rules_course_id_courses_id_fk",
+					"tableFrom": "schedule_rules",
+					"tableTo": "courses",
+					"columnsFrom": ["course_id"],
+					"columnsTo": ["id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		},
+		"public.sessions": {
+			"name": "sessions",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "uuid",
+					"primaryKey": true,
+					"notNull": true,
+					"default": "gen_random_uuid()"
+				},
+				"course_id": {
+					"name": "course_id",
+					"type": "uuid",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"schedule_rule_id": {
+					"name": "schedule_rule_id",
+					"type": "uuid",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"occurrence_date": {
+					"name": "occurrence_date",
+					"type": "date",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"starts_at": {
+					"name": "starts_at",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"ends_at": {
+					"name": "ends_at",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"course_name_snapshot": {
+					"name": "course_name_snapshot",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"location_snapshot": {
+					"name": "location_snapshot",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"cost_units": {
+					"name": "cost_units",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"status": {
+					"name": "status",
+					"type": "session_status",
+					"typeSchema": "public",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "'scheduled'"
+				},
+				"status_reason": {
+					"name": "status_reason",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"settled_at": {
+					"name": "settled_at",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				}
+			},
+			"indexes": {
+				"sessions_course_occurrence_idx": {
+					"name": "sessions_course_occurrence_idx",
+					"columns": [
+						{
+							"expression": "course_id",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						},
+						{
+							"expression": "occurrence_date",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						}
+					],
+					"isUnique": true,
+					"concurrently": false,
+					"method": "btree",
+					"with": {}
+				},
+				"sessions_starts_at_idx": {
+					"name": "sessions_starts_at_idx",
+					"columns": [
+						{
+							"expression": "starts_at",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						}
+					],
+					"isUnique": false,
+					"concurrently": false,
+					"method": "btree",
+					"with": {}
+				},
+				"sessions_course_starts_at_idx": {
+					"name": "sessions_course_starts_at_idx",
+					"columns": [
+						{
+							"expression": "course_id",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						},
+						{
+							"expression": "starts_at",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						}
+					],
+					"isUnique": false,
+					"concurrently": false,
+					"method": "btree",
+					"with": {}
+				},
+				"sessions_status_starts_at_idx": {
+					"name": "sessions_status_starts_at_idx",
+					"columns": [
+						{
+							"expression": "status",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						},
+						{
+							"expression": "starts_at",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						}
+					],
+					"isUnique": false,
+					"concurrently": false,
+					"method": "btree",
+					"with": {}
+				}
+			},
+			"foreignKeys": {
+				"sessions_course_id_courses_id_fk": {
+					"name": "sessions_course_id_courses_id_fk",
+					"tableFrom": "sessions",
+					"tableTo": "courses",
+					"columnsFrom": ["course_id"],
+					"columnsTo": ["id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				},
+				"sessions_schedule_rule_id_schedule_rules_id_fk": {
+					"name": "sessions_schedule_rule_id_schedule_rules_id_fk",
+					"tableFrom": "sessions",
+					"tableTo": "schedule_rules",
+					"columnsFrom": ["schedule_rule_id"],
+					"columnsTo": ["id"],
+					"onDelete": "set null",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		}
+	},
+	"enums": {
+		"public.course_status": {
+			"name": "course_status",
+			"schema": "public",
+			"values": ["active", "archived"]
+		},
+		"public.ledger_kind": {
+			"name": "ledger_kind",
+			"schema": "public",
+			"values": ["initial", "purchase", "consumption", "reversal", "adjustment"]
+		},
+		"public.session_status": {
+			"name": "session_status",
+			"schema": "public",
+			"values": ["scheduled", "completed", "leave", "absent", "cancelled"]
+		}
+	},
+	"schemas": {},
+	"sequences": {},
+	"roles": {},
+	"policies": {},
+	"views": {},
+	"_meta": {
+		"columns": {},
+		"schemas": {},
+		"tables": {}
+	}
+}

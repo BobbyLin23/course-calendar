@@ -15,6 +15,7 @@
 		"@course-calendar/env": "workspace:*",
 		"@trpc/client": "catalog:",
 		"@trpc/server": "catalog:",
+		"drizzle-orm": "^0.45.2",
 		"dotenv": "catalog:",
 		"zod": "catalog:"
 	},
