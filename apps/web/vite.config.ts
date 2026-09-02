@@ -8,6 +8,9 @@ export default defineConfig({
 	server: {
 		port: 3071,
 	},
+	preview: {
+		allowedHosts: ["ximi.bobbylin.top"],
+	},
 	resolve: {
 		tsconfigPaths: true,
 	},
