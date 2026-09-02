@@ -12,10 +12,10 @@ import { cn } from "@course-calendar/ui/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import {
-	BookOpenCheck,
 	CalendarDays,
 	ChevronLeft,
 	ChevronRight,
+	GraduationCap,
 	MapPin,
 } from "lucide-react";
 import {
@@ -43,9 +43,9 @@ import { trpc } from "@/utils/trpc";
 export const Route = createFileRoute("/")({ component: HomeComponent });
 
 const DAY_LABELS = ["一", "二", "三", "四", "五", "六", "日"];
-const HOUR_HEIGHT = 72;
-const DEFAULT_START_HOUR = 7;
-const DEFAULT_END_HOUR = 22;
+const HOUR_HEIGHT = 76;
+const DEFAULT_START_HOUR = 8;
+const DEFAULT_END_HOUR = 18;
 const weekLabelFormatter = new Intl.DateTimeFormat("zh-CN", {
 	year: "numeric",
 	month: "long",
@@ -93,6 +93,7 @@ function HomeComponent() {
 	const selectedCourse = selectedSession
 		? activeCourses.find((course) => course.id === selectedSession.courseId)
 		: undefined;
+	const semester = useMemo(() => getSemesterInfo(weekStart), [weekStart]);
 
 	const moveWeek = useCallback((amount: number) => {
 		setWeekStartKey((current) =>
@@ -134,6 +135,7 @@ function HomeComponent() {
 		<main className="calendar-workspace">
 			<CalendarSidebar
 				weekStart={weekStart}
+				sessionCount={visibleSessions.length}
 				courses={activeCourses}
 				hiddenCourseIds={hiddenCourseIds}
 				onSelectDate={(date) =>
@@ -145,11 +147,11 @@ function HomeComponent() {
 			<section className="calendar-main-panel">
 				<header className="calendar-toolbar">
 					<div className="calendar-toolbar-title">
-						<h1>{weekLabelFormatter.format(addDays(weekStart, 3))}</h1>
-						<span>
-							{shortDateFormatter.format(dates[0] ?? weekStart)} —{" "}
-							{shortDateFormatter.format(dates[6] ?? weekStart)}
-						</span>
+						<div className="calendar-week-title">
+							<span>第 {semester.week} 周</span>
+							<strong>{visibleSessions.length} 节课</strong>
+						</div>
+						<p>{semester.label}</p>
 					</div>
 					<div className="calendar-toolbar-actions">
 						<Button
@@ -184,7 +186,11 @@ function HomeComponent() {
 				</header>
 
 				{weekQuery.isLoading ? (
-					<div className="calendar-loading" aria-label="正在加载本周课程">
+					<div
+						className="calendar-loading"
+						role="status"
+						aria-label="正在加载本周课程"
+					>
 						<Skeleton className="h-full w-full rounded-none" />
 					</div>
 				) : (
@@ -211,12 +217,14 @@ function HomeComponent() {
 
 function CalendarSidebar({
 	weekStart,
+	sessionCount,
 	courses,
 	hiddenCourseIds,
 	onSelectDate,
 	onToggleCourse,
 }: {
 	weekStart: Date;
+	sessionCount: number;
 	courses: Course[];
 	hiddenCourseIds: Set<string>;
 	onSelectDate: (date: Date) => void;
@@ -233,6 +241,17 @@ function CalendarSidebar({
 
 	return (
 		<aside className="calendar-sidebar" aria-label="日历筛选">
+			<section className="week-overview" aria-label="本周课程概览">
+				<div className="week-overview-icon">
+					<GraduationCap />
+				</div>
+				<span>本周安排</span>
+				<strong>{sessionCount} 节课</strong>
+				<p>
+					{shortDateFormatter.format(weekStart)} —{" "}
+					{shortDateFormatter.format(addDays(weekStart, 6))}
+				</p>
+			</section>
 			<section className="mini-calendar" aria-label="迷你月历">
 				<h2>{weekLabelFormatter.format(monthDate)}</h2>
 				<div className="mini-calendar-weekdays" aria-hidden="true">
@@ -273,7 +292,7 @@ function CalendarSidebar({
 					{courses.map((course) => {
 						const visible = !hiddenCourseIds.has(course.id);
 						return (
-							<label className="calendar-course-filter" key={course.id}>
+							<div className="calendar-course-filter" key={course.id}>
 								<Checkbox
 									checked={visible}
 									onCheckedChange={(checked) =>
@@ -291,7 +310,7 @@ function CalendarSidebar({
 								<span className="calendar-course-balance">
 									{formatUnits(course.balanceUnits)}
 								</span>
-							</label>
+							</div>
 						);
 					})}
 					{courses.length === 0 ? (
@@ -328,14 +347,14 @@ function WeekCalendar({
 		0,
 		Math.min(
 			DEFAULT_START_HOUR,
-			...sessions.map((session) => Math.floor(session.startMinutes / 60)),
+			...sessions.map((session) => Math.floor(session.startMinutes / 60) - 1),
 		),
 	);
 	const endHour = Math.min(
 		24,
 		Math.max(
 			DEFAULT_END_HOUR,
-			...sessions.map((session) => Math.ceil(session.endMinutes / 60)),
+			...sessions.map((session) => Math.ceil(session.endMinutes / 60) + 1),
 		),
 	);
 	const hours = Array.from(
@@ -360,59 +379,82 @@ function WeekCalendar({
 			firstCourseMinutes === Number.POSITIVE_INFINITY
 				? currentMinutes
 				: firstCourseMinutes;
-		const targetTop = Math.max(
-			0,
-			((referenceMinutes - startHour * 60) / 60) * HOUR_HEIGHT - HOUR_HEIGHT,
-		);
+		const precedingHour = Math.floor(referenceMinutes / 60) - 1;
+		const targetTop = Math.max(0, (precedingHour - startHour) * HOUR_HEIGHT);
 		const targetDate = dates.some((date) => localDateKey(date) === todayKey)
 			? todayKey
 			: localDateKey(dates[0] ?? new Date());
-		const targetColumn = calendar.querySelector<HTMLElement>(
-			`[data-date="${targetDate}"]`,
-		);
-		const targetLeft = targetColumn
-			? Math.max(0, targetColumn.offsetLeft - 60)
-			: 0;
-		calendar.scrollTo({ left: targetLeft, top: targetTop, behavior: "auto" });
+		let animationFrame = 0;
+		const alignCalendar = () => {
+			window.cancelAnimationFrame(animationFrame);
+			animationFrame = window.requestAnimationFrame(() => {
+				const targetColumn = calendar.querySelector<HTMLElement>(
+					`[data-date="${targetDate}"]`,
+				);
+				const targetLeft = targetColumn
+					? Math.max(0, targetColumn.offsetLeft - 60)
+					: 0;
+				const maxScrollTop = Math.max(
+					0,
+					calendar.scrollHeight - calendar.clientHeight,
+				);
+				const alignedMaxScrollTop =
+					Math.floor(maxScrollTop / HOUR_HEIGHT) * HOUR_HEIGHT;
+				calendar.scrollTo({
+					left: targetLeft,
+					top: Math.min(targetTop, alignedMaxScrollTop),
+					behavior: "auto",
+				});
+			});
+		};
+		const resizeObserver = new ResizeObserver(alignCalendar);
+		resizeObserver.observe(calendar);
+		alignCalendar();
+
+		return () => {
+			resizeObserver.disconnect();
+			window.cancelAnimationFrame(animationFrame);
+		};
 	}, [currentMinutes, dates, sessions, startHour, todayKey]);
 
 	return (
-		<div
+		<section
 			ref={calendarRef}
-			className="notion-calendar-scroll"
+			className="super-calendar-scroll"
 			aria-label="本周课程日历，可横向和纵向滚动"
 		>
-			<div className="notion-calendar-grid">
+			<div className="super-calendar-grid">
 				<div className="calendar-corner-cell">
-					<span>GMT+8</span>
+					<span>{(dates[3]?.getMonth() ?? 0) + 1}月</span>
 				</div>
 				{dates.map((date, index) => {
 					const dateKey = localDateKey(date);
 					const isToday = dateKey === todayKey;
+					const daySessionCount = sessions.filter(
+						(session) => session.date === dateKey,
+					).length;
 					return (
 						<div
 							key={dateKey}
 							data-date={dateKey}
 							className={cn("calendar-day-heading", isToday && "is-today")}
 						>
-							<span>周{DAY_LABELS[index]}</span>
+							<span>{DAY_LABELS[index]}</span>
 							<strong>{date.getDate()}</strong>
-							<small>
-								{sessions.filter((session) => session.date === dateKey)
-									.length || ""}
-							</small>
+							{daySessionCount > 0 ? <small>{daySessionCount}</small> : null}
 						</div>
 					);
 				})}
 
 				<div className="calendar-time-axis" style={{ height: gridHeight }}>
-					{hours.map((hour) => (
-						<span
+					{hours.slice(0, -1).map((hour, index) => (
+						<div
 							key={hour}
-							style={{ top: `${(hour - startHour) * HOUR_HEIGHT - 7}px` }}
+							style={{ top: `${(hour - startHour) * HOUR_HEIGHT}px` }}
 						>
-							{String(hour).padStart(2, "0")}:00
-						</span>
+							<strong>{index + 1}</strong>
+							<span>{String(hour).padStart(2, "0")}:00</span>
+						</div>
 					))}
 				</div>
 
@@ -482,7 +524,7 @@ function WeekCalendar({
 					</EmptyHeader>
 				</Empty>
 			) : null}
-		</div>
+		</section>
 	);
 }
 
@@ -519,7 +561,7 @@ function SessionCard({
 		<button
 			type="button"
 			className={cn(
-				"notion-session-card",
+				"super-session-card",
 				`course-${course.color}`,
 				isMuted && "session-muted",
 				height < 52 && "is-compact",
@@ -529,11 +571,8 @@ function SessionCard({
 			aria-label={`${course.name}，${session.startTime} 至 ${session.endTime}，${statusLabel(session.status)}`}
 		>
 			<span className="session-title-row">
-				<BookOpenCheck />
 				<strong>{course.name}</strong>
-			</span>
-			<span className="session-meta">
-				{session.startTime}–{session.endTime}
+				<small>{formatUnits(course.balanceUnits)}</small>
 			</span>
 			<span className="session-place">
 				<MapPin />
@@ -541,8 +580,37 @@ function SessionCard({
 					? statusLabel(session.status)
 					: course.location || course.childName}
 			</span>
+			<span className="session-meta">
+				{session.startTime}–{session.endTime}
+			</span>
 		</button>
 	);
+}
+
+function getSemesterInfo(date: Date) {
+	const year = date.getFullYear();
+	const isSpring = date.getMonth() < 7;
+	const semesterStart = isSpring
+		? getWeekStart(new Date(year, 1, 24))
+		: getWeekStart(new Date(year, 8, 1));
+	const adjustedStart =
+		date < semesterStart
+			? getWeekStart(new Date(year - 1, 8, 1))
+			: semesterStart;
+	const week = Math.max(
+		1,
+		Math.floor((date.getTime() - adjustedStart.getTime()) / 604_800_000) + 1,
+	);
+	const academicStartYear =
+		adjustedStart.getMonth() >= 7
+			? adjustedStart.getFullYear()
+			: adjustedStart.getFullYear() - 1;
+	const term = adjustedStart.getMonth() >= 7 ? 1 : 2;
+
+	return {
+		week,
+		label: `${academicStartYear}–${academicStartYear + 1} 学年 · 第 ${term} 学期`,
+	};
 }
 
 function layoutSessions(sessions: Session[]) {

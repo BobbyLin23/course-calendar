@@ -44,7 +44,9 @@ function RootComponent() {
 			<HeadContent />
 			<ThemeProvider
 				attribute="class"
-				defaultTheme="system"
+				defaultTheme="light"
+				enableSystem={false}
+				forcedTheme="light"
 				disableTransitionOnChange
 			>
 				<AppShell />

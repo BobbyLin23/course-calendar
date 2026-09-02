@@ -22,9 +22,9 @@ export function AppShell() {
 
 function BottomNav() {
 	return (
-		<nav className="fixed inset-x-0 bottom-0 z-40 border-t bg-background/95 px-4 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden">
+		<nav className="fixed inset-x-0 bottom-0 z-40 border-t bg-card/95 px-4 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden">
 			<div className="mx-auto grid max-w-lg grid-cols-2 gap-2 py-2">
-				<NavItem to="/" icon={<CalendarDays />} label="日历" />
+				<NavItem to="/" icon={<CalendarDays />} label="课表" />
 				<NavItem to="/courses" icon={<ListTodo />} label="课程" />
 			</div>
 		</nav>

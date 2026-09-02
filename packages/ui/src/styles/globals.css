@@ -7,24 +7,24 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-	--background: oklch(0.985 0.008 82);
-	--foreground: oklch(0.145 0 0);
-	--card: oklch(0.997 0.004 82);
-	--card-foreground: oklch(0.145 0 0);
+	--background: oklch(0.975 0.012 252);
+	--foreground: oklch(0.235 0.035 257);
+	--card: oklch(1 0 0);
+	--card-foreground: oklch(0.235 0.035 257);
 	--popover: oklch(1 0 0);
 	--popover-foreground: oklch(0.145 0 0);
-	--primary: oklch(0.205 0 0);
+	--primary: oklch(0.625 0.205 258);
 	--primary-foreground: oklch(0.985 0 0);
-	--secondary: oklch(0.97 0 0);
-	--secondary-foreground: oklch(0.205 0 0);
-	--muted: oklch(0.955 0.012 82);
-	--muted-foreground: oklch(0.556 0 0);
-	--accent: oklch(0.94 0.02 82);
-	--accent-foreground: oklch(0.205 0 0);
+	--secondary: oklch(0.96 0.018 252);
+	--secondary-foreground: oklch(0.31 0.06 257);
+	--muted: oklch(0.957 0.014 252);
+	--muted-foreground: oklch(0.56 0.035 257);
+	--accent: oklch(0.94 0.035 252);
+	--accent-foreground: oklch(0.31 0.08 257);
 	--destructive: oklch(0.58 0.22 27);
-	--border: oklch(0.9 0.018 82);
-	--input: oklch(0.88 0.02 82);
-	--ring: oklch(0.708 0 0);
+	--border: oklch(0.9 0.018 252);
+	--input: oklch(0.88 0.025 252);
+	--ring: oklch(0.625 0.205 258);
 	--chart-1: oklch(0.809 0.105 251.813);
 	--chart-2: oklch(0.623 0.214 259.815);
 	--chart-3: oklch(0.546 0.245 262.881);
@@ -275,19 +275,19 @@
 	}
 
 	.course-indigo {
-		@apply border-l-indigo-500 bg-indigo-100 text-indigo-950 dark:bg-indigo-950/70 dark:text-indigo-100;
+		@apply border-l-indigo-500 border-t-indigo-500 bg-indigo-100 text-indigo-950 dark:bg-indigo-950/70 dark:text-indigo-100;
 	}
 	.course-coral {
-		@apply border-l-rose-500 bg-rose-100 text-rose-950 dark:bg-rose-950/70 dark:text-rose-100;
+		@apply border-l-rose-500 border-t-rose-500 bg-rose-100 text-rose-950 dark:bg-rose-950/70 dark:text-rose-100;
 	}
 	.course-sage {
-		@apply border-l-emerald-500 bg-emerald-100 text-emerald-950 dark:bg-emerald-950/70 dark:text-emerald-100;
+		@apply border-l-emerald-500 border-t-emerald-500 bg-emerald-100 text-emerald-950 dark:bg-emerald-950/70 dark:text-emerald-100;
 	}
 	.course-amber {
-		@apply border-l-amber-500 bg-amber-100 text-amber-950 dark:bg-amber-950/70 dark:text-amber-100;
+		@apply border-l-amber-500 border-t-amber-500 bg-amber-100 text-amber-950 dark:bg-amber-950/70 dark:text-amber-100;
 	}
 	.course-plum {
-		@apply border-l-violet-500 bg-violet-100 text-violet-950 dark:bg-violet-950/70 dark:text-violet-100;
+		@apply border-l-violet-500 border-t-violet-500 bg-violet-100 text-violet-950 dark:bg-violet-950/70 dark:text-violet-100;
 	}
 
 	.session-leave {
@@ -303,17 +303,47 @@
 	}
 
 	.calendar-workspace {
-		@apply grid min-h-0 bg-background;
+		@apply grid min-h-0 gap-5 bg-background p-5;
 		height: calc(100svh - 4rem);
-		grid-template-columns: 16.5rem minmax(0, 1fr);
+		grid-template-columns: 15.5rem minmax(0, 1fr);
 	}
 
 	.calendar-sidebar {
-		@apply hidden min-h-0 flex-col border-r bg-card md:flex;
+		@apply hidden min-h-0 flex-col gap-4 overflow-y-auto md:flex;
+	}
+
+	.week-overview {
+		@apply relative overflow-hidden rounded-3xl bg-primary p-5 text-primary-foreground shadow-lg;
+		box-shadow: 0 18px 40px color-mix(in oklch, var(--primary) 22%, transparent);
+	}
+
+	.week-overview::after {
+		content: "";
+		@apply pointer-events-none absolute -right-7 -bottom-8 size-32 rounded-full border-[22px] border-primary-foreground/10;
+	}
+
+	.week-overview-icon {
+		@apply mb-7 flex size-10 items-center justify-center rounded-2xl bg-primary-foreground/15;
+	}
+
+	.week-overview-icon svg {
+		@apply size-5;
+	}
+
+	.week-overview > span {
+		@apply block text-xs text-primary-foreground/70;
+	}
+
+	.week-overview > strong {
+		@apply mt-1 block text-2xl font-semibold tracking-tight;
+	}
+
+	.week-overview > p {
+		@apply mt-1 text-[11px] tabular-nums text-primary-foreground/70;
 	}
 
 	.mini-calendar {
-		@apply border-b px-4 py-5;
+		@apply rounded-3xl border bg-card px-4 py-5 shadow-sm;
 	}
 
 	.mini-calendar h2 {
@@ -339,7 +369,7 @@
 	}
 
 	.mini-calendar-day.is-selected-week {
-		@apply bg-muted;
+		@apply bg-accent text-accent-foreground;
 	}
 
 	.mini-calendar-day.is-today {
@@ -347,7 +377,7 @@
 	}
 
 	.calendar-list-section {
-		@apply flex min-h-0 flex-1 flex-col px-3 py-5;
+		@apply flex min-h-0 flex-1 flex-col rounded-3xl border bg-card px-3 py-4 shadow-sm;
 	}
 
 	.calendar-list-heading {
@@ -367,7 +397,7 @@
 	}
 
 	.calendar-course-filter {
-		@apply flex min-h-11 cursor-pointer items-center gap-2 rounded-lg px-2 py-2 transition-colors hover:bg-muted/70;
+		@apply flex min-h-11 items-center gap-2 rounded-xl px-2 py-2 transition-colors hover:bg-muted/70;
 	}
 
 	.calendar-course-filter > button {
@@ -395,7 +425,7 @@
 	}
 
 	.calendar-sidebar-hint {
-		@apply flex items-center gap-1.5 border-t px-5 py-3 text-[10px] text-muted-foreground;
+		@apply flex items-center gap-1.5 px-3 text-[10px] text-muted-foreground;
 	}
 
 	.calendar-sidebar-hint span {
@@ -407,23 +437,33 @@
 	}
 
 	.calendar-main-panel {
-		@apply flex min-h-0 min-w-0 flex-col bg-card;
+		@apply flex min-h-0 min-w-0 flex-col overflow-hidden rounded-[2rem] border bg-card shadow-xl;
+		box-shadow: 0 24px 70px
+			color-mix(in oklch, var(--foreground) 8%, transparent);
 	}
 
 	.calendar-toolbar {
-		@apply flex h-[4.75rem] shrink-0 items-center justify-between gap-3 border-b px-3 sm:px-5;
+		@apply flex h-[5.25rem] shrink-0 items-center justify-between gap-3 border-b px-4 sm:px-6;
 	}
 
 	.calendar-toolbar-title {
 		@apply min-w-0;
 	}
 
-	.calendar-toolbar-title h1 {
-		@apply truncate font-semibold text-base tracking-tight sm:text-lg;
+	.calendar-week-title {
+		@apply flex items-center gap-2;
 	}
 
-	.calendar-toolbar-title span {
-		@apply block text-[10px] tabular-nums text-muted-foreground sm:text-xs;
+	.calendar-week-title > span {
+		@apply truncate text-xl font-semibold tracking-tight;
+	}
+
+	.calendar-week-title > strong {
+		@apply rounded-full bg-accent px-2.5 py-1 text-[10px] font-semibold text-primary;
+	}
+
+	.calendar-toolbar-title > p {
+		@apply mt-0.5 text-[10px] tabular-nums text-muted-foreground sm:text-xs;
 	}
 
 	.calendar-toolbar-actions {
@@ -431,51 +471,72 @@
 	}
 
 	.calendar-stepper {
-		@apply flex items-center rounded-lg border bg-background p-0.5;
+		@apply flex items-center rounded-xl bg-muted p-0.5;
 	}
 
 	.calendar-loading {
 		@apply min-h-0 flex-1 overflow-hidden;
 	}
 
-	.notion-calendar-scroll {
+	.super-calendar-scroll {
 		@apply relative min-h-0 flex-1 overflow-auto bg-card;
 		overscroll-behavior: contain;
+		scrollbar-color: color-mix(
+				in oklch,
+				var(--muted-foreground) 38%,
+				transparent
+			)
+			transparent;
+		scrollbar-width: thin;
 		scroll-snap-type: x proximity;
 	}
 
-	.notion-calendar-grid {
-		--time-gutter: 3.75rem;
+	.super-calendar-scroll::-webkit-scrollbar {
+		width: 6px;
+		height: 6px;
+	}
+
+	.super-calendar-scroll::-webkit-scrollbar-track {
+		background: transparent;
+	}
+
+	.super-calendar-scroll::-webkit-scrollbar-thumb {
+		border-radius: 999px;
+		background: color-mix(in oklch, var(--muted-foreground) 32%, transparent);
+	}
+
+	.super-calendar-grid {
+		--time-gutter: 4.25rem;
 		display: grid;
-		grid-template-columns: var(--time-gutter) repeat(7, minmax(8.5rem, 1fr));
-		grid-template-rows: 4.5rem auto;
-		min-width: calc(var(--time-gutter) + 59.5rem);
+		grid-template-columns: var(--time-gutter) repeat(7, minmax(7.75rem, 1fr));
+		grid-template-rows: 4.75rem auto;
+		min-width: calc(var(--time-gutter) + 54.25rem);
 	}
 
 	.calendar-corner-cell {
-		@apply sticky top-0 left-0 z-40 flex items-end justify-center border-r border-b bg-card pb-2;
+		@apply sticky top-0 left-0 z-40 flex items-center justify-center border-r border-b bg-card;
 	}
 
 	.calendar-corner-cell span {
-		@apply text-[9px] tabular-nums text-muted-foreground;
+		@apply rounded-full bg-muted px-2 py-1 text-[10px] font-semibold tabular-nums text-muted-foreground;
 	}
 
 	.calendar-day-heading {
-		@apply sticky top-0 z-30 flex items-center justify-center gap-2 border-r border-b bg-card px-2 text-muted-foreground;
+		@apply sticky top-0 z-30 flex flex-col items-center justify-center gap-0.5 border-r border-b bg-card px-2 text-muted-foreground;
 		scroll-snap-align: start;
 		scroll-margin-left: var(--time-gutter);
 	}
 
 	.calendar-day-heading span {
-		@apply text-[10px] font-medium;
+		@apply text-[11px] font-medium;
 	}
 
 	.calendar-day-heading strong {
-		@apply flex size-7 items-center justify-center rounded-full font-semibold text-sm tabular-nums text-foreground;
+		@apply flex size-7 items-center justify-center rounded-lg font-semibold text-sm tabular-nums text-foreground;
 	}
 
 	.calendar-day-heading small {
-		@apply flex size-4 items-center justify-center rounded-full bg-muted text-[9px] tabular-nums;
+		@apply absolute top-2 right-2 flex size-4 items-center justify-center rounded-full bg-accent text-[9px] font-semibold tabular-nums text-primary;
 	}
 
 	.calendar-day-heading.is-today span {
@@ -483,38 +544,41 @@
 	}
 
 	.calendar-day-heading.is-today strong {
-		@apply bg-primary text-primary-foreground;
+		@apply bg-foreground text-background shadow-sm;
 	}
 
 	.calendar-time-axis {
 		@apply sticky left-0 z-20 border-r bg-card;
 	}
 
+	.calendar-time-axis > div {
+		@apply absolute inset-x-0 flex h-[4.75rem] flex-col items-center justify-center border-b;
+	}
+
+	.calendar-time-axis strong {
+		@apply text-sm font-semibold tabular-nums text-foreground;
+	}
+
 	.calendar-time-axis span {
-		@apply absolute right-2 text-[9px] tabular-nums text-muted-foreground;
+		@apply mt-0.5 text-[9px] tabular-nums text-muted-foreground;
 	}
 
 	.calendar-day-column {
 		@apply relative border-r bg-card;
-		background-image: linear-gradient(
-			to right,
-			color-mix(in oklch, var(--border) 25%, transparent),
-			transparent 1px
-		);
 	}
 
 	.calendar-day-column.is-today {
-		background-color: color-mix(in oklch, var(--primary) 2.5%, var(--card));
+		background-color: color-mix(in oklch, var(--primary) 3%, var(--card));
 	}
 
 	.calendar-hour-row {
-		@apply pointer-events-none absolute inset-x-0 border-t;
-		height: 4.5rem;
+		@apply pointer-events-none absolute inset-x-0 border-b;
+		height: 4.75rem;
 	}
 
 	.calendar-hour-row::after {
 		content: "";
-		@apply absolute inset-x-0 top-1/2 border-t border-dashed border-border/35;
+		@apply absolute inset-x-0 top-1/2 border-t border-dashed border-border/50;
 	}
 
 	.calendar-now-line {
@@ -525,48 +589,52 @@
 		@apply absolute -top-1 -left-1 size-2 rounded-full bg-rose-500;
 	}
 
-	.notion-session-card {
-		@apply absolute z-10 flex min-w-0 flex-col items-start overflow-hidden rounded-md border border-transparent border-l-[3px] px-1.5 py-1 text-left shadow-xs transition-[transform,box-shadow,filter] hover:z-30 hover:-translate-y-px hover:brightness-[0.98] hover:shadow-md focus-visible:z-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring;
+	.super-session-card {
+		@apply absolute z-10 flex min-w-0 flex-col items-start overflow-hidden rounded-xl border border-transparent border-t-4 px-2 py-1.5 text-left shadow-xs transition-[transform,box-shadow,filter] hover:z-30 hover:-translate-y-0.5 hover:brightness-[0.98] hover:shadow-lg focus-visible:z-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring;
 	}
 
 	.session-title-row {
-		@apply flex w-full min-w-0 items-center gap-1;
+		@apply flex w-full min-w-0 items-start justify-between gap-1;
 	}
 
-	.session-title-row svg,
 	.session-place svg {
-		@apply size-2.5 shrink-0;
+		@apply size-3 shrink-0;
 	}
 
 	.session-title-row strong {
-		@apply truncate font-semibold text-[11px] leading-4;
+		@apply line-clamp-2 font-semibold text-xs leading-4;
+	}
+
+	.session-title-row small {
+		@apply flex size-4 shrink-0 items-center justify-center rounded-full bg-card/70 text-[8px] font-semibold tabular-nums;
 	}
 
 	.session-meta,
 	.session-place {
-		@apply mt-0.5 w-full truncate text-[9px] leading-3 opacity-70;
+		@apply mt-0.5 w-full truncate text-[9px] leading-3 opacity-65;
 	}
 
 	.session-place {
 		@apply flex items-center gap-0.5;
 	}
 
-	.notion-session-card.is-compact {
+	.super-session-card.is-compact {
 		@apply justify-center py-0.5;
 	}
 
-	.notion-session-card.is-compact .session-meta,
-	.notion-session-card.is-compact .session-place,
-	.notion-session-card.is-compact svg {
+	.super-session-card.is-compact .session-meta,
+	.super-session-card.is-compact .session-place,
+	.super-session-card.is-compact small,
+	.super-session-card.is-compact svg {
 		@apply hidden;
 	}
 
-	.notion-session-card.session-muted {
+	.super-session-card.session-muted {
 		@apply border-dashed opacity-60 grayscale-[0.25];
 	}
 
 	.calendar-empty-state {
-		@apply pointer-events-none sticky z-10 -mt-[44rem] h-64 w-72 border bg-card/95 shadow-lg backdrop-blur;
+		@apply pointer-events-none sticky z-10 -mt-[36rem] h-64 w-72 border bg-card/95 shadow-lg backdrop-blur;
 		left: calc(50% - 9rem);
 	}
 
@@ -639,30 +707,65 @@
 	.calendar-workspace {
 		height: calc(100svh - 4rem - 4.25rem);
 		grid-template-columns: minmax(0, 1fr);
+		@apply gap-0 p-0;
 	}
 
 	.calendar-toolbar {
-		height: 4.25rem;
+		height: 4.75rem;
 	}
 
-	.notion-calendar-grid {
-		--time-gutter: 3.5rem;
-		grid-template-columns: var(--time-gutter) repeat(7, minmax(8.25rem, 1fr));
-		grid-template-rows: 4rem auto;
-		min-width: calc(var(--time-gutter) + 57.75rem);
+	.calendar-main-panel {
+		@apply rounded-none border-x-0 border-b-0 shadow-none;
+	}
+
+	.super-calendar-grid {
+		--time-gutter: 2.75rem;
+		grid-template-columns: var(--time-gutter) repeat(7, minmax(3.1rem, 1fr));
+		grid-template-rows: 4.25rem auto;
+		min-width: 100%;
+	}
+
+	.super-calendar-scroll {
+		scrollbar-width: none;
+	}
+
+	.super-calendar-scroll::-webkit-scrollbar {
+		display: none;
 	}
 
 	.calendar-day-heading {
-		@apply gap-1;
+		@apply gap-0 px-0.5;
 	}
 
 	.calendar-day-heading small {
 		@apply hidden;
 	}
+
+	.calendar-corner-cell span {
+		@apply px-1.5 text-[9px];
+	}
+
+	.super-session-card {
+		@apply rounded-lg px-1 py-1;
+	}
+
+	.session-title-row strong {
+		@apply text-[10px] leading-3;
+	}
+
+	.session-title-row small,
+	.session-place svg {
+		@apply hidden;
+	}
+
+	.session-meta,
+	.session-place {
+		@apply text-[8px] leading-[10px];
+	}
 }
 
 @media (min-width: 1120px) {
-	.notion-calendar-grid {
+	.super-calendar-grid {
 		grid-template-columns: var(--time-gutter) repeat(7, minmax(0, 1fr));
 		min-width: 100%;
 	}
