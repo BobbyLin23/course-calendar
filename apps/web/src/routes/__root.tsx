@@ -50,7 +50,7 @@ function RootComponent() {
 				disableTransitionOnChange
 			>
 				<AppShell />
-				<Toaster richColors />
+				<Toaster position="top-center" richColors />
 			</ThemeProvider>
 		</>
 	);
